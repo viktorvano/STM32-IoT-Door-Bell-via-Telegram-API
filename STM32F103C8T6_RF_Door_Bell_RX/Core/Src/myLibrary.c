@@ -105,6 +105,19 @@ void messageHandler_RF()
 		HAL_UART_Transmit(&huart1, (uint8_t*)ESP_Post, strlen(ESP_Post), 100);
 		HAL_Delay(80);
 		char cipsend[30];
+
+#ifdef USE_Speech_Recognition_AI
+		//send TOKEN
+		memset(cipsend, 0, 30);
+		sprintf(cipsend, "AT+CIPSEND=%i\r\n", strlen(AI_Token)+2);
+		HAL_UART_Transmit(&huart1, (uint8_t*)cipsend, strlen(cipsend), 100);
+		HAL_Delay(80);
+		uint8_t length_token[2] = {0, strlen(AI_Token)};
+		HAL_UART_Transmit(&huart1, length_token, 2, 100);
+		HAL_UART_Transmit(&huart1, (uint8_t*)AI_Token, strlen(AI_Token), 100);
+		HAL_Delay(80);
+#endif
+		//send Message
 		memset(cipsend, 0, 30);
 		sprintf(cipsend, "AT+CIPSEND=%i\r\n", strlen(ESP_MESSAGE)+2);
 		HAL_UART_Transmit(&huart1, (uint8_t*)cipsend, strlen(cipsend), 100);
@@ -112,7 +125,12 @@ void messageHandler_RF()
 		uint8_t length[2] = {0, strlen(ESP_MESSAGE)};
 		HAL_UART_Transmit(&huart1, length, 2, 100);
 		HAL_UART_Transmit(&huart1, (uint8_t*)ESP_MESSAGE, strlen(ESP_MESSAGE), 100);
+
+#ifdef USE_Speech_Recognition_AI
+		HAL_Delay(250);//a delay for Speech Recognition AI response message
+#else
 		HAL_Delay(80);
+#endif
 		HAL_UART_Transmit(&huart1, (uint8_t*)"AT+CIPCLOSE\r\n", strlen("AT+CIPCLOSE\r\n"), 100);
 		HAL_Delay(80);
 		HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);

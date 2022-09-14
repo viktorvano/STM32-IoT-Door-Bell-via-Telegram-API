@@ -13,9 +13,16 @@
 #include <string.h>
 #include <stdlib.h>
 
+//un-comment USE_Speech_Recognition_AI to post the message to Speech Recognition AI
+//comment to post the message to your Telegram bot server without AI token
+#define USE_Speech_Recognition_AI
+#ifdef USE_Speech_Recognition_AI
+	#define AI_Token		"xyzTOKENxx"
+#endif
+
 //Change your WiFi credentials
 #define WiFi_Credentials	"AT+CWJAP=\"WiFiSSID\",\"WiFiPASSWORD\"\r\n"
-#define ESP_Post			"AT+CIPSTART=\"TCP\",\"192.168.1.25\",8765\r\n"
+#define ESP_Post			"AT+CIPSTART=\"TCP\",\"192.168.1.59\",7778\r\n"
 
 #define ESP_MESSAGE			"Ding, dong. From the door."
 
